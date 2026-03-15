@@ -1,0 +1,27 @@
+(library
+ (name biocaml)
+ (wrapped false)
+ (modules
+  bio_util
+  bio_geom
+  bio_xyz
+  bio_pdb
+  bio_crd
+  bio_dcd
+  bio_select
+  bio_analysis
+  bio_fit
+  bio_pca
+  bio_solvate
+  pdb_parse
+  crd_parse
+  makecrd
+  ions_find
+  bio_cli)
+ (libraries cmdliner))
+
+(library
+ (name biocaml_owl)
+ (modules bio_df_owl)
+ (libraries biocaml owl)
+ (optional))

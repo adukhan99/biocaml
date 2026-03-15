@@ -1,0 +1,4 @@
+(executable
+ (public_name BIOCAML)
+ (name main)
+ (libraries biocaml))
