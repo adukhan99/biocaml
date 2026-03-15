@@ -1,8 +1,0 @@
-lib: [
-  "_build/install/default/lib/BIOCAML/META"
-  "_build/install/default/lib/BIOCAML/dune-package"
-  "_build/install/default/lib/BIOCAML/opam"
-]
-bin: [
-  "_build/install/default/bin/BIOCAML"
-]
