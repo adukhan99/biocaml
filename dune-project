@@ -7,9 +7,9 @@
 (source
  (github username/reponame))
 
-(authors "Author Name <author@example.com>")
+(authors "Alex Dukhan")
 
-(maintainers "Maintainer Name <maintainer@example.com>")
+(maintainers "Alex Dukhan")
 
 (license LICENSE)
 
@@ -17,10 +17,11 @@
 
 (package
  (name BIOCAML)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml)
+ (synopsis "Structural bioinformatics and molecular dynamics analysis tool")
+ (description
+  "A CLI tool and library for biophysics, offering an expanding array of standard tools inspired by the bio3d R package.")
+ (depends ocaml base)
  (tags
-  ("add topics" "to describe" your project)))
+  (bioinformatics molecular-dynamics pdb-parsing structural-biology ocaml)))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html

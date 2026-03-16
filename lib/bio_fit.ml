@@ -1,3 +1,4 @@
+open Base
 open Bio_geom
 
 let centroid coords =
@@ -5,19 +6,20 @@ let centroid coords =
   if n = 0 then of_xyz 0.0 0.0 0.0
   else
     let sum =
-      Array.fold_left (fun acc c ->
+      Array.fold coords ~init:(of_xyz 0.0 0.0 0.0) ~f:(fun acc c ->
         {
           x = acc.x +. c.x;
           y = acc.y +. c.y;
           z = acc.z +. c.z;
         }
-      ) (of_xyz 0.0 0.0 0.0) coords
+      )
     in
-    of_xyz (sum.x /. float_of_int n) (sum.y /. float_of_int n) (sum.z /. float_of_int n)
+    let f_n = Float.of_int n in
+    of_xyz (sum.x /. f_n) (sum.y /. f_n) (sum.z /. f_n)
 
 let center coords =
   let c = centroid coords in
-  Array.map (fun p -> { x = p.x -. c.x; y = p.y -. c.y; z = p.z -. c.z }) coords, c
+  Array.map coords ~f:(fun p -> { x = p.x -. c.x; y = p.y -. c.y; z = p.z -. c.z }), c
 
 let cov_matrix a b =
   let sxx = ref 0.0 and sxy = ref 0.0 and sxz = ref 0.0 in
@@ -59,17 +61,17 @@ let quat_from_cov (sxx, sxy, sxz, syx, syy, syz, szx, szy, szz) =
   let v = ref [| 1.0; 0.0; 0.0; 0.0 |] in
   for _ = 1 to 60 do
     let w =
-      Array.init 4 (fun i ->
+      Array.init 4 ~f:(fun i ->
         mat.(i).(0) *. (!v).(0)
         +. mat.(i).(1) *. (!v).(1)
         +. mat.(i).(2) *. (!v).(2)
         +. mat.(i).(3) *. (!v).(3))
     in
     let norm =
-      sqrt (Array.fold_left (fun acc x -> acc +. x *. x) 0.0 w)
+      Float.sqrt (Array.fold w ~init:0.0 ~f:(fun acc x -> acc +. x *. x))
     in
-    if norm > 0.0 then
-      v := Array.map (fun x -> x /. norm) w
+    if Float.(norm > 0.0) then
+      v := Array.map w ~f:(fun x -> x /. norm)
   done;
   (!v).(0), (!v).(1), (!v).(2), (!v).(3)
 
@@ -100,10 +102,10 @@ let fit ref_coords mob_coords =
     let q = quat_from_cov cov in
     let rot = rot_from_quat q in
     let aligned =
-      Array.map (fun p ->
+      Array.map mob_centered ~f:(fun p ->
         let pr = apply_rot rot p in
         { x = pr.x +. ref_centroid.x; y = pr.y +. ref_centroid.y; z = pr.z +. ref_centroid.z }
-      ) mob_centered
+      )
     in
     Some (aligned, rot, ref_centroid, mob_centroid)
 
@@ -118,4 +120,4 @@ let rmsd ref_coords aligned =
       let dz = ref_coords.(i).z -. aligned.(i).z in
       sum := !sum +. dx *. dx +. dy *. dy +. dz *. dz
     done;
-    sqrt (!sum /. float_of_int n)
+    Float.sqrt (!sum /. Float.of_int n)

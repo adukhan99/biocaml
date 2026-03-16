@@ -18,7 +18,7 @@
   makecrd
   ions_find
   bio_cli)
- (libraries cmdliner))
+ (libraries cmdliner base))
 
 (library
  (name biocaml_owl)
